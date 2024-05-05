@@ -1,0 +1,24 @@
+{
+    "data": [
+        {
+            "rollNo": 1,
+            "name": "Jim",
+            "aggregateMarks": 98
+        },
+        {
+            "rollNo": 2,
+            "name": "John",
+            "aggregateMarks": 95
+        },
+        {
+            "rollNo": 3,
+            "name": "James",
+            "aggregateMarks": 89
+        },
+        {
+            "rollNo": 4,
+            "name": "Smith",
+            "aggregateMarks": 76
+        }
+    ]
+}

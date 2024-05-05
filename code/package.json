@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seedlocations": "node ./seed/seedLocations.js"
+    "seedlocations": "node ./seed/seedLocations.js",
+    "seedstudents": "node ./seed/seedStudents.js"
   },
   "author": "Dinesh",
   "license": "ISC",
