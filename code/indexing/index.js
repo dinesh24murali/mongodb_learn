@@ -13,6 +13,12 @@ const LocationSchema = new Schema({
 
 const Location = mongoose.model('location', LocationSchema);
 
+/**
+ * Test the performance by comparing the time it took for running the query before and after
+ * setting up indexing
+ */
+
+
 const run = async () => {
 
 

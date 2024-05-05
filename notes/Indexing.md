@@ -23,6 +23,9 @@ We will be working with the following schema in these examples
   "state": "MA"
 }
 ```
+
+You can setup indexing through a script like `setupIndex.js` or through mongo shell. The examples that are in this Readme file can be ran on mongodb shell
+
 ## Single field indexing
 
 Check query execution statics
@@ -205,11 +208,15 @@ db.locations.find({ state: "MA", pop: { $gt: 1000 } }).explain('executionStats')
 ```
 docker compose up
 ```
-2. Do docker inspect and get the IP address for the mongoDB container and add that to the .env file. It will be something like below
+2. Do docker inspect and get the IP address for the mongoDB container and add that to the .env file.
+```
+docker inspect <container id>
+```
+It will be something like below
 ```
 MONGO_DB_CONNECTION_URL=mongodb://admin:admin@172.27.0.2:27017/mongolearn?authSource=admin
 ```
-3. Run the `seed.js` file, this will pick the `mocakdatajson` file from the `./data` directory and add it to the DB with a unique `_id`
+3. Run the `seedLocations.js` file, this will pick the `locations.json` file from the `./data` directory and add it to the DB with a unique `_id`. You can run this script multiple times.
 
 We got the mock data from this [link](https://media.mongodb.org/zips.json?_ga=1.92708894.286077728.1426686247)
 

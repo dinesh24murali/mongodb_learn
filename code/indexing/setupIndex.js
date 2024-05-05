@@ -1,5 +1,5 @@
 const { MongoClient } = require('mongodb');
-const collections = require('./collections');
+const collections = require('../constants/collections');
 const dotenv = require('dotenv')
 dotenv.config()
 
@@ -21,7 +21,10 @@ const run = async () => {
     const startTime = new Date();
     console.log(`Start time:  ${startTime.toISOString()}`)
 
-    const result = await db.collection(collections.Locations).createIndex({ pop: 1240 });
+    // Single field index
+    await db.collection(collections.Locations).createIndex({ pop: 1240 });
+    // compound index
+    const result = await db.collection(collections.Locations).createIndex({ "state": 1, "pop": 1 });
 
     console.log(`Created index: ${JSON.stringify(result)}`)
 

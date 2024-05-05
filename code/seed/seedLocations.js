@@ -1,6 +1,8 @@
 const mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 const dotenv = require('dotenv')
+const records = require('../../data/locations.json');
+
 dotenv.config()
 
 const LocationSchema = new Schema({
@@ -10,11 +12,9 @@ const LocationSchema = new Schema({
     loc: { type: [Schema.Types.Decimal128], required: true },
 });
 
-
 const Location = mongoose.model('location', LocationSchema);
 
-const run = async () => {
-
+const seed = async () => {
 
     await mongoose.connect(process.env.MONGO_DB_CONNECTION_URL)
         .then(() => {
@@ -24,16 +24,28 @@ const run = async () => {
             console.log(" MongoDB connection Error ");
         });
 
+    const newData = [];
+
+
+    for (const item of records.data) {
+        delete item._id;
+        newData.push({ ...item });
+    }
+    console.log({ newData: newData.length })
+
     const startTime = new Date();
     console.log(`Start time:  ${startTime.toISOString()}`)
-    const temp = await Location.find({ state: "MA", pop: { $gt: 1000 } }).exec();
-    console.log({
-        noOfRecords: temp.length
-    })
+    await Location.insertMany(
+        newData
+    ).then(function () {
+        console.log("Data inserted") // Success 
+    }).catch(function (error) {
+        console.log({ error })     // Failure 
+    });
     const endTime = new Date();
     console.log(`End time:  ${endTime.toISOString()}`);
 
     await mongoose.disconnect();
 }
 
-run();
+seed();
