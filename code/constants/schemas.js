@@ -5,7 +5,7 @@ const LocationSchema = new Schema({
     city: { type: Schema.Types.String },
     state: { type: Schema.Types.String },
     pop: { type: Schema.Types.Number, required: true },
-    loc: { type: [Schema.Types.Decimal128], required: true },
+    loc: { type: [Schema.Types.Number], required: true },
 });
 
 const MarkSchema = new Schema({

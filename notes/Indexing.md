@@ -16,8 +16,8 @@ We will be working with the following schema in these examples
   "_id": "01001",
   "city": "AGAWAM",
   "loc": [
-    -72.622739,
-    42.070206
+    15,
+    7
   ],
   "pop": 15338,
   "state": "MA"
@@ -199,9 +199,157 @@ db.locations.createIndex({ "state": 1, "pop": 1 })
 
 The order of the fields listed in a compound index is important. The index will contain references to documents sorted first by the values of the `state` field and, within each value of the `state` field, sorted by values of the `pop` field.
 
+Example query:
 ```js
 db.locations.find({ state: "MA", pop: { $gt: 1000 } }).explain('executionStats')
 ```
+
+## [Multikey Indexes](https://www.mongodb.com/docs/manual/core/indexes/index-types/index-multikey/)
+
+- Multikey indexes collect and sort data from fields containing array values. Multikey indexes improve performance for queries on array fields.
+- You do not need to explicitly specify the multikey type. When you create an index on a field that contains an array value, MongoDB automatically sets that index to be a multikey index.
+
+Create index for loc array:
+```js
+db.locations.createIndex({ "loc": 1 })
+```
+
+
+Example query:
+```bash
+db.locations.find({ "loc": 7 }).explain('executionStats')
+```
+
+Before running indexing
+```js
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'mongolearn.locations',
+    indexFilterSet: false,
+    parsedQuery: { loc: { '$eq': 7 } },
+    queryHash: '44331DD1',
+    planCacheKey: '44331DD1',
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    winningPlan: {
+      stage: 'COLLSCAN',
+      filter: { loc: { '$eq': 7 } },
+      direction: 'forward'
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 5859,  // <----------- Result
+    executionTimeMillis: 24,
+    totalKeysExamined: 0,
+    totalDocsExamined: 58706, // <-------------------- Examines all records in the DB
+    executionStages: {
+      stage: 'COLLSCAN',
+      filter: { loc: { '$eq': 7 } },
+      nReturned: 5859,
+      executionTimeMillisEstimate: 3,
+      works: 58707,
+      advanced: 5859,
+      needTime: 52847,
+      needYield: 0,
+      saveState: 58,
+      restoreState: 58,
+      isEOF: 1,
+      direction: 'forward',
+      docsExamined: 58706
+    }
+  },
+  command: { find: 'locations', filter: { loc: 7 }, '$db': 'mongolearn' },
+  ok: 1
+}
+```
+
+After running indexing:
+```js
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'mongolearn.locations',
+    indexFilterSet: false,
+    parsedQuery: { loc: { '$eq': 7 } },
+    queryHash: '44331DD1',
+    planCacheKey: '2D3485EE',
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    winningPlan: {
+      stage: 'FETCH',
+      inputStage: {
+        stage: 'IXSCAN',
+        keyPattern: { loc: 1 },
+        indexName: 'loc_1',
+        isMultiKey: true,
+        multiKeyPaths: { loc: [ 'loc' ] },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: { loc: [ '[7, 7]' ] }
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 5859, // <-------------------- DB queries only needed records
+    executionTimeMillis: 7,
+    totalKeysExamined: 5859,
+    totalDocsExamined: 5859, // <-------------------- DB queries only needed records
+    executionStages: {
+      stage: 'FETCH',
+      nReturned: 5859,
+      executionTimeMillisEstimate: 0,
+      works: 5860,
+      advanced: 5859,
+      needTime: 0,
+      needYield: 0,
+      saveState: 5,
+      restoreState: 5,
+      isEOF: 1,
+      docsExamined: 5859,
+      alreadyHasObj: 0,
+      inputStage: {
+        stage: 'IXSCAN',
+        nReturned: 5859,
+        executionTimeMillisEstimate: 0,
+        works: 5860,
+        advanced: 5859,
+        needTime: 0,
+        needYield: 0,
+        saveState: 5,
+        restoreState: 5,
+        isEOF: 1,
+        keyPattern: { loc: 1 },
+        indexName: 'loc_1',
+        isMultiKey: true,
+        multiKeyPaths: { loc: [ 'loc' ] },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: { loc: [ '[7, 7]' ] },
+        keysExamined: 5859,
+        seeks: 1,
+        dupsTested: 5859,
+        dupsDropped: 0
+      }
+    }
+  },
+  command: { find: 'locations', filter: { loc: 7 }, '$db': 'mongolearn' },
+  ok: 1
+}
+```
+
 # How to run this:
 
 1. Start mongoDB docker container from the root of the repo
