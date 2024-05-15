@@ -3,6 +3,7 @@
 module.exports = {
     Locations: 'locations',
     Marks: 'marks',
-    Ranks: 'ranks'
+    Ranks: 'ranks',
+    Join: 'join'
 }
 
