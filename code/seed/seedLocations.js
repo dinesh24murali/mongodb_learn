@@ -8,6 +8,10 @@ const {
 dotenv.config();
 
 const seed = async () => {
+
+  console.log({
+    Wow: process.env.MONGO_DB_CONNECTION_URL
+  })
   await mongoose
     .connect(process.env.MONGO_DB_CONNECTION_URL)
     .then(() => {

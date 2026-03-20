@@ -22,9 +22,9 @@ const run = async () => {
     console.log(`Start time:  ${startTime.toISOString()}`)
 
     // Single field index
-    await db.collection(collections.Locations).createIndex({ pop: 1240 });
+    const result = await db.collection(collections.Locations).createIndex({ pop: 1 }); // ascending
     // compound index
-    const result = await db.collection(collections.Locations).createIndex({ "state": 1, "pop": 1 });
+    // const result = await db.collection(collections.Locations).createIndex({ "state": 1, "pop": 1 });
 
     console.log(`Created index: ${JSON.stringify(result)}`)
 

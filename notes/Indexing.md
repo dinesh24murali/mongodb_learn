@@ -90,9 +90,10 @@ Start time:  2024-05-04T05:59:22.517Z
 End time:  2024-05-04T05:59:22.770Z
 ```
 
-Run the following command to setup indexing for this search query:
+Run the following command to setup indexing for the pop field:
 ```bash
-db.locations.createIndex({ pop: 1240 })
+db.locations.createIndex({ pop: 1 })   // ascending
+db.locations.createIndex({ pop: -1 })  // descending
 ```
 
 If we run the executionStats now:
@@ -178,7 +179,7 @@ If we run the executionStats now:
 }
 ```
 
-Since we indexed this search query, the no of records that the DB Examined is the same as the result. The executing time has also reduced
+Since we indexed this field, the no of records that the DB Examined is the same as the result. The executing time has also reduced
 ```bash
 dinesh@dinesh-HP-Pavilion-Laptop-15-cc1xx ~/Work_dump/mongodb_dump/mongodb_learn/indexing (main) $ node index.js 
  MongoDB connection Success 
@@ -186,8 +187,6 @@ Start time:  2024-05-04T06:00:55.705Z
 { temp: 108 }
 End time:  2024-05-04T06:00:55.745Z
 ```
-
-Later on if we add a new item with the same `pop` value (`1240`), it will automaticaly add it to the index.
 
 ## [Compound indexing](https://www.mongodb.com/docs/v5.3/core/index-compound/#compound-indexes)
 
